@@ -1,12 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
-    // Update is called once per frame
+    public float speed = 5f;
     void Update()
     {
-        transform.Translate(Vector3.right * 5 * Time.deltaTime);
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
+
+        Vector3 dir = new Vector3(h, v, 0);
+        transform.position += dir * speed * Time.deltaTime;
     }
 }
