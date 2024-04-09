@@ -27,10 +27,18 @@ public class Enemy : MonoBehaviour
     }
     void OnCollisionEnter(Collision other)
     {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Bullet"))
+        {
+            // 1. 씬에서 ScoreManager 객체를 찾아오자
+            GameObject smObject = GameObject.Find("ScoreManager");
+            // 2.ScoreManager 게임오브젝트에서 얻어 온다
+            ScoreManager sm = smObject.GetComponent<ScoreManager>();
+            // 3. ScoreManager 의 Get/Set 함수로 수정
+            sm.SetScore(sm.GetScore() + 1);
+        }
         GameObject explosion = Instantiate(explosionFactory);
         explosion.transform.position = transform.position;
         Destroy(other.gameObject);
         Destroy(gameObject);
-
     }
 }
