@@ -29,16 +29,34 @@ public class Enemy : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Bullet"))
         {
-            // 1. 씬에서 ScoreManager 객체를 찾아오자
-            GameObject smObject = GameObject.Find("ScoreManager");
-            // 2.ScoreManager 게임오브젝트에서 얻어 온다
-            ScoreManager sm = smObject.GetComponent<ScoreManager>();
-            // 3. ScoreManager 의 Get/Set 함수로 수정
-            sm.SetScore(sm.GetScore() + 1);
+            // 에너미를 잡을 때마다 현재 점수 표시하고 싶다.
+            ScoreManager.Instance.Score++;
         }
         GameObject explosion = Instantiate(explosionFactory);
         explosion.transform.position = transform.position;
-        Destroy(other.gameObject);
-        Destroy(gameObject);
+        // 만약 부딪힌 객체가 Bullet 인 경우에는 비활성화 시켜 탄창에 다시 넣어준다.
+        //1.만약 부딪힌 물체가 Bullet 이라면
+        if (other.gameObject.name.Contains("Bullet"))
+        {
+            //2.부딪힌 물체를 비활성화
+            other.gameObject.SetActive(false);
+            // PlayerFire 클래스 얻어오기
+            PlayerFire player =
+            GameObject.Find("Player").GetComponent<PlayerFire>();
+            // list 에 총알 삽입
+            player.bulletObjectPool.Add(other.gameObject);
+        }
+        //3.그렇지 않으면 제거
+        else
+        {
+            Destroy(other.gameObject);
+        }
+        gameObject.SetActive(false);
+        // EnemyManager 클래스 얻어오기
+        GameObject emObject = GameObject.Find("EnemyManager");
+        EnemyManager manager =
+                              emObject.GetComponent<EnemyManager>();
+        // list 에 총알 삽입
+        manager.enemyObjectPool.Add(gameObject);
     }
 }
